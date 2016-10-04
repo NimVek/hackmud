@@ -1,4 +1,4 @@
-function(context, args) {
+function(context, args) { // date:""
 
     var l = #s.scripts.lib();
 
@@ -10,7 +10,7 @@ function(context, args) {
     if (!args || !args.date || !args.date.match(/^\d{6}\.\d{4}$/)) {
         return {
             ok: false,
-            msg: "usage: " + context.this_script + ' { date:"' + l.to_game_timestr(l.get_date()) + '" }'
+            msg: "Usage: " + context.this_script + ' { date:"' + l.to_game_timestr(l.get_date()) + '" }'
         };
     }
 
