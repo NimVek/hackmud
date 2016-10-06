@@ -1,15 +1,15 @@
 
-Standard Library (#s.scripts.lib())
+## Standard Library (`#s.scripts.lib()`)
 
 | Function | Description |
 | --- | --- |
-| `ok()` | |
-| `not_impl()` | |
-| `log()` | |
-| `get_log()` | |
-| `rand_int()` | |
+| `ok()` | Helper that returns `{ ok:true }`. You can use it in your script as return Value. |
+| `not_impl()` | Helper that returns `{ ok:false, msg:"not implemented" }` |
+| `log(item)` | Adds the `item` to an Array of logmessages, you can use it insteed of `<stdout>`. See `get_log`.|
+| `get_log()` |  Returns the array of logmessages, you putted with `log`. |
+| `rand_int(min, max)` | Returns a random integer between `min` and `max`. |
 | `are_ids_eq` | |
-| `is_obj` | |
+| `is_obj(item)` | Returns `true` if `item` is an `Object` |
 | `is_str` | |
 | `is_num` | |
 | `is_int` | |
