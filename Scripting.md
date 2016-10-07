@@ -1,3 +1,10 @@
+# Scripting
+
+## Basics
+
+### Scriptor
+
+## Database (`#db`)
 
 ## Standard Library (`#s.scripts.lib()`)
 
