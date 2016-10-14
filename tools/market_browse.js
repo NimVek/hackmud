@@ -12,7 +12,7 @@ function(context, args) {
         list = #s.market.browse(args),
         market = {};
 
-    if (list.length == 0) {
+    if (list.length === 0) {
         return {
             ok: false,
             msg: "No suitable upgrades found.\nUsage: " + context.this_script + ' { name:"<upgrade name", type:"<lock, script_space, script>", tier:<1-4>, class:"<architect, executive, infitrator, scavenger>", cost:<num or GC str>, order:<array of properties> }'
@@ -21,8 +21,10 @@ function(context, args) {
 
     l.each(list, function(_, item) {
         var id = "" + item.rarity + "-" + item.name;
-        null == item.i || id in market || (market[id] = item);
-    })
+        if (!(null === item.i || id in market)) {
+	    market[id] = item;
+	}
+    });
 
     list = [];
     for (var id in market) {
@@ -35,11 +37,11 @@ function(context, args) {
 
     list.sort(function(a, b) {
         var result = 0;
-        for (var key in order) 
-            if (key = order[key]) {
-                result = a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0;
-                if (0 != result) break;
-            }
+        for (var key in order) {
+	    key = order[key];
+	    result = a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0;
+            if (0 !== result) break;
+        }
         return result;
     });
 

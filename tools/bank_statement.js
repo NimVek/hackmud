@@ -38,7 +38,7 @@ function(context, args) { // count:5
             { name: "Balance", key: "balance", dir: -1, func: d.expandGC });
     }
 
-    var usage = '\n\nFor more transactions, add count:<"all" or number>\nFilter for sender, recipient or script, add from:"<user>", to:"<user>" or script:"<script>".\n'
+    var usage = '\n\nFor more transactions, add count:<"all" or number>\nFilter for sender, recipient or script, add from:"<user>", to:"<user>" or script:"<script>".\n';
 
     return {
         ok: true,

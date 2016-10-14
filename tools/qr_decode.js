@@ -20,12 +20,13 @@ function(context, args) { // qr:<string>
 	    return pattern[code[y>>1][x]][y&1];
 	}
 
-	var info = {}
+	var info = {};
 	info.dimension = code[0].length;
 	info.version = (info.dimension - 17) >> 2;
 
 	var tmp = 0;
-	for (var i = 0; i < 5; i++) {
+	var i;
+	for (i = 0; i < 5; i++) {
 	    tmp = (tmp << 1) | bit(i,8);
 	}
 	tmp ^= 0x15;
@@ -33,15 +34,15 @@ function(context, args) { // qr:<string>
 	info.mask = tmp % 0x8;
 
 	var masks = [
-	    function (x,y) { return ((x + y) & 0x1) == 0;},
-	    function (x,y) { return (x & 0x1) == 0;},
-	    function (x,y) { return (y % 3) == 0;},
-	    function (x,y) { return ((x+y) % 3) == 0;},
-//	    function (x,y) { return (((x>>1) + Math.floor(y / 3)) & 0x1) == 0;},
-	    function (x,y) { return (((y>>1) + Math.floor(x / 3)) & 0x1) == 0;},
-	    function (x,y) { return (((x*y) & 0x1) + ((x*y) % 3)) == 0;},
-	    function (x,y) { return ((((x*y) & 0x1) + ((x*y) % 3)) & 0x1) == 0;},
-	    function (x,y) { return (((((x+y) & 0x1) + ((x*y) % 3)) & 0x1) == 0);}
+	    function (x,y) { return ((x + y) & 0x1) === 0;},
+	    function (x,y) { return (x & 0x1) === 0;},
+	    function (x,y) { return (y % 3) === 0;},
+	    function (x,y) { return ((x+y) % 3) === 0;},
+//	    function (x,y) { return (((x>>1) + Math.floor(y / 3)) & 0x1) === 0;},
+	    function (x,y) { return (((y>>1) + Math.floor(x / 3)) & 0x1) === 0;},
+	    function (x,y) { return (((x*y) & 0x1) + ((x*y) % 3)) === 0;},
+	    function (x,y) { return ((((x*y) & 0x1) + ((x*y) % 3)) & 0x1) === 0;},
+	    function (x,y) { return (((((x+y) & 0x1) + ((x*y) % 3)) & 0x1) === 0);}
 	];
 
 	function databit(x,y) {
@@ -74,7 +75,7 @@ function(context, args) { // qr:<string>
 	    var max = alignment.length;
 	    for (var i = 0; i < max; i++) {
 		for (var j = 0; j < max; j++) {
-		    if ((i == 0 && (j == 0 || j == max -1)) || (i == max -1 && j == 0)) {
+		    if ((i === 0 && (j === 0 || j == max -1)) || (i == max -1 && j === 0)) {
 			continue;
 		    }
 		    if ((Math.abs(x - alignment[i]) < 3) && (Math.abs(y - alignment[j]) < 3)) {
@@ -106,7 +107,7 @@ function(context, args) { // qr:<string>
 				result.push(byte);
 				bits = 0;
 				byte = 0;
-				if (--count == 0) {
+				if (--count === 0) {
 				    return result;
 				}
 			    }
@@ -161,20 +162,22 @@ function(context, args) { // qr:<string>
 
 	var words = get_codewords(counts[1]);
 
-	var [ c, all ] = counts;
+//	var [ c, all ] = counts;
+	var c = counts[0];
+	var all = counts[1];
 	tmp = [];
-	for (var i = 0; i < c; i++) {
+	for (i = 0; i < c; i++) {
 	    tmp.push([]);
 	}
 	var remain = all % c;
-	for (var i = 0; i < all - remain; i++) {
+	for (i = 0; i < all - remain; i++) {
 	    tmp[i % c].push(words[i]);
 	}
-	for (var i = remain; i > 0; i--) {
+	for (i = remain; i > 0; i--) {
 	    tmp[c-i].push(words[all-i]);
 	}
 	blocks = [];
-	for (var i = 0; i < c; i++) {
+	for (i = 0; i < c; i++) {
 	    blocks = blocks.concat(tmp[i]);
 	}
 
@@ -207,7 +210,7 @@ function(context, args) { // qr:<string>
 	var results = [];
 	while (cursor / 8 < blocks.length) {
 	    var encoding = getbits(4);
-	    if (encoding == 0) {
+	    if (encoding === 0) {
 		return results;
 	    } else if (encoding == 4) {
 		results.push(getbytes());

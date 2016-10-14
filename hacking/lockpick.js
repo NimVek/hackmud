@@ -6,16 +6,18 @@
 // - for color_complement or triad iterating over colors (95)
 // doing all shrinks to 340 chars
 
-function(context, { lock }) { // lock:#s.<user>.<script>
+function(context, args) { // lock:#s.<user>.<script>
+    var lock = args.lock;
     var d = #s.dtr.lib();
     var commands = [ "unlock", "release", "open" ];
     var primes = [ 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97 ];
     var color = [ "red", "lime", "blue", "orange", "green", "purple", "yellow", "cyan" ];
-    var args = {};
+    args = {};
     var type = "", tmp, result = "", index;
 
     do {
-        if (tmp = result.match(/!(\w+)!.*$/)) {
+	tmp = result.match(/!(\w+)!.*$/);
+        if (tmp) {
             type = tmp[1];
             index = 0;
         }
