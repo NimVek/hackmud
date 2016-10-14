@@ -2,7 +2,10 @@ module.exports = function(grunt) {
     "use strict";
 
     grunt.initConfig({
-        clean: [ "build/", "release/" ],
+        clean: {
+	    build: [ "build/" ],
+	    release: [ "release/" ],
+	},
         copy: {
             pre: {
                 expand: true,
@@ -27,6 +30,22 @@ module.exports = function(grunt) {
                 }
             }
         },
+	concat: {
+	    lib: {
+		options: {
+		    banner: "(function () {\nvar l = SCRIPTOR.scripts.lib();\nreturn {\n",
+		    footer: "};\n})();",
+		    separator: ",\n",
+		    process: function(src, filepath) {
+			var path = require('path');
+			return path.basename(filepath, ".js") + ": " + src.replace(/\s*$/, "");
+		    }
+		},
+		files: {
+		"build/lib.js": [ "lib/*.js" ],
+		},
+	    },
+	},
         jshint: {
             files: [ "Gruntfile.js", "build/*.js" ]
         },
@@ -42,8 +61,9 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-uglify");
 
-    grunt.registerTask("default", [ "clean", "copy:pre", "jshint", "uglify", "copy:post" ]);
+    grunt.registerTask("default", [ "clean", "copy:pre", "concat", "jshint", "uglify", "copy:post", "clean:build" ]);
 };
