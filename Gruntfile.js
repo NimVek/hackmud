@@ -2,6 +2,9 @@ module.exports = function(grunt) {
     "use strict";
 
     grunt.initConfig({
+	meta: {
+	    user: grunt.option("user") || "nimvek",
+	},
         clean: {
 	    build: [ "build/" ],
 	    release: [ "release/" ],
@@ -25,7 +28,7 @@ module.exports = function(grunt) {
                 dest: "release/",
                 options: {
                     process: function(content) {
-                        return content.replace(/^\!([\s\S]*)\(\);$/, "$1").replace(/^\(([\s\S]*)\)\(\);$/, "$1").replace(/SCRIPTOR\./g, "#s.").replace(/DATABASE\./g, "#db.");
+                        return content.replace(/^\!([\s\S]*)\(\);$/, "$1").replace(/^\(([\s\S]*)\)\(\);$/, "$1").replace(/SCRIPTOR\./g, "#s.").replace(/DATABASE\./g, "#db.").replace(/LIBRARY/g, grunt.template.process("#s.<%= meta.user %>.lib()"));
                     }
                 }
             }
