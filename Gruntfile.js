@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                 dest: "build/",
                 options: {
                     process: function(content) {
-                        return content.replace(/#s\./g, "SCRIPTOR.").replace(/#db\./g, "DATABASE.").replace(/([\s\S]*)/, "($1)();");
+                        return content.replace(/#s\./g, "SCRIPTOR.").replace(/#db\./g, "DATABASE.").replace(/([\s\S]*)/, "($1)();").replace(/INCLUDE\((\w+)\)/g, function (match,name) { return "var "+name+" = " + grunt.file.read("lib/"+name+".js")+";"; });
                     }
                 }
             },
