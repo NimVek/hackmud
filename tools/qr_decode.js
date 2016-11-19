@@ -1,6 +1,5 @@
 function(context, args) { // qr:<string>
     var caller = context.caller;
-    var l = #s.scripts.lib();
 
     if (!args || !args.qr) {
 	return { ok:false, msg:context.this_script + " { qr:<string> }"};

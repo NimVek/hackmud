@@ -1,11 +1,12 @@
 function (array, order) {
     // sort with given order
+    INCLUDE(stdlib);
+    INCLUDE(cmp);
 
-    var lib = LIBRARY;
-    if (l.is_func(order)) {
+    if (stdlib.is_func(order)) {
         return array.sort(order);
     }
     return array.sort(function(a, b) {
-        return lib.cmp(a, b, order);
+        return cmp(a, b, order);
     });
 }

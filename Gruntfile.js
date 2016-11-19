@@ -17,7 +17,36 @@ module.exports = function(grunt) {
                 dest: "build/",
                 options: {
                     process: function(content) {
-                        return content.replace(/#s\./g, "SCRIPTOR.").replace(/#db\./g, "DATABASE.").replace(/([\s\S]*)/, "($1)();").replace(/INCLUDE\((\w+)\)/g, function (match,name) { return "var "+name+" = " + grunt.file.read("lib/"+name+".js")+";"; });
+			// Determine includes
+			var sources = [ content ];
+			var topology = [];
+			while (sources.length) {
+			    var source = sources.shift();
+			    var includes = source.match(/.*INCLUDE\(\w+\).*/g);
+			    while (includes && includes.length) {
+				var include = includes.pop().replace(/.*\((.*)\).*/, "$1");
+				sources.push(grunt.file.read("include/"+include+".js"));
+				topology.unshift(include);
+			    }
+			}
+			// Collect includes
+			var done = [];
+			var code = "";
+			while (topology.length) {
+			    var name = topology.shift();
+			    if (done.indexOf( name) < 0) {
+				code += "var "+name+" = " + grunt.file.read("include/"+name+".js")+";\n";
+				done.push(name);
+			    }
+			}
+
+			// prepare code for linting and uglifing
+			content = content.replace(/.*INCLUDE\(\w+\).*/, code);
+			content = content.replace(/.*INCLUDE\(\w+\).*/g, "");
+			content = content.replace(/#s\./g, "SCRIPTOR.");
+			content = content.replace(/#db\./g, "DATABASE.");
+			content = content.replace(/([\s\S]*)/, "($1)();");
+                        return content;
                     }
                 }
             },
@@ -33,26 +62,15 @@ module.exports = function(grunt) {
                 }
             }
         },
-	concat: {
-	    lib: {
-		options: {
-		    banner: "(function () {\nvar l = SCRIPTOR.scripts.lib();\nreturn {\n",
-		    footer: "};\n})();",
-		    separator: ",\n",
-		    process: function(src, filepath) {
-			var path = require('path');
-			return path.basename(filepath, ".js") + ": " + src.replace(/\s*$/, "");
-		    }
-		},
-		files: {
-		"build/lib.js": [ "lib/*.js" ],
-		},
-	    },
-	},
         jshint: {
             files: [ "Gruntfile.js", "build/*.js" ]
         },
         uglify: {
+	    options: {
+		mangle: true,
+		compress: true,
+		beautify: true
+	    },
             all: {
                 files: [ {
                     expand: true,
@@ -64,9 +82,9 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-uglify");
 
-    grunt.registerTask("default", [ "clean", "copy:pre", "concat", "jshint", "uglify", "copy:post", "clean:build" ]);
+    grunt.registerTask("default", [ "static" ]);
+    grunt.registerTask("static", "build static scripts", [ "clean", "copy:pre", "jshint", "uglify", "copy:post", "clean:build" ]);
 };

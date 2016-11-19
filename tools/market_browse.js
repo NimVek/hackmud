@@ -1,6 +1,8 @@
 function(context, args) {
-    var l = #s.scripts.lib(), 
-        d = #s.dtr.lib();
+    INCLUDE(stdlib);
+    INCLUDE(dtr);
+    INCLUDE(sort);
+    INCLUDE(classes);
 
     args = args || {};
     if (!(args.name || args.type || args.tier || args.class || args.cost)) {
@@ -19,7 +21,7 @@ function(context, args) {
         };
     }
 
-    l.each(list, function(_, item) {
+    stdlib.each(list, function(_, item) {
         var id = "" + item.rarity + "-" + item.name;
         if (!(null === item.i || id in market)) {
 	    market[id] = item;
@@ -35,26 +37,16 @@ function(context, args) {
         list.push(item);
     }
 
-    list.sort(function(a, b) {
-        var result = 0;
-        for (var key in order) {
-	    key = order[key];
-	    result = a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0;
-            if (0 !== result) break;
-        }
-        return result;
-    });
-
-    var classes = [ "architect", "infiltrator", "scavenger", "executive" ];
+    list = sort(list, order);
 
     var titles = [
         { name: "Name", key: "name" },
-        { name: "Rarity", key: "rarity", func: d.coloredRarityLevel },
-        { name: "Cost", key: "cost", dir: -1, func: d.expandGC },
+        { name: "Rarity", key: "rarity", func: dtr.coloredRarityLevel },
+        { name: "Cost", key: "cost", dir: -1, func: dtr.expandGC },
         { name: "Token", key: "i" },
         { name: "Type", key: "type" },
         { name: "Class", key: "class", func: function(value) {
-                                                 return classes[value] || "none";
+                                                 return classes[value];
                                              }},
         { name: "Tier", key: "tier", dir: 0 } ];
 
@@ -64,6 +56,6 @@ function(context, args) {
 
     return {
         ok: true,
-        msg: d.columns(list, titles, {})
+        msg: dtr.columns(list, titles, { pre:"", suf:"" }, true)
     };
 }
