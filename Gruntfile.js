@@ -13,7 +13,7 @@ module.exports = function(grunt) {
             pre: {
                 expand: true,
                 flatten: true,
-                src: [ "tools/*.js", "hacking/*.js" ],
+                src: [ "tools/*.js", "hacking/*.js", "poc/*.js" ],
                 dest: "build/",
                 options: {
                     process: function(content) {
