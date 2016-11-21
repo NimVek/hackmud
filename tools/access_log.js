@@ -19,11 +19,17 @@ function(context, args) {
 	    entry.date = parse_timestr(match[1]);
 	    entry.line = line = match[2];
 	}
-	match = line.match(/^Connection from ((\w+)\.\w+)$/);
+	match = line.match(/^(Connection|Breach attempt|System access) from ((\w+)\.\w+)$/);
 	if (match) {
-	    entry.type = "connection";
-	    entry.user = nfo_user(match[2]);
-	    entry.script = nfo_script(match[1]);
+	    if (match[1].match(/breach/i)) {
+		entry.type = "breach";
+	    } else if (match[1].match(/access/i)) {
+		entry.type = "access";
+	    } else {
+		entry.type = "connection";
+	    }
+	    entry.user = nfo_user(match[3]);
+	    entry.script = nfo_script(match[2]);
 	    delete entry.line;
 	}
 	result.push(entry);
