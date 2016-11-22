@@ -32,7 +32,7 @@
 | `hash_code` | |
 | `to_gc_str` | |
 | `to_gc_num` | |
-| `to_game_timestr` | |
+| `to_game_timestr(date)` | formats `date` like `YYMMDD.HHMM` |
 | `cap_str_len` | |
 | `each` | |
 | `select` | |
@@ -49,7 +49,7 @@
 | `security_level_names` | |
 | `get_security_level_name` | |
 | `create_rand_string` | |
-| `get_user_from_script` | |
+| `get_user_from_script(script)` | returns teh user part of a scriptname like `<user>.<script>` |
 | `u_sort_num_arr_desc` | |
 | `can_continue_execution` | |
 | `can_continue_execution_error` | |
