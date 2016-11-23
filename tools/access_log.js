@@ -19,18 +19,31 @@ function(context, args) {
 	    entry.date = parse_timestr(match[1]);
 	    entry.line = line = match[2];
 	}
-	match = line.match(/^(Connection|Breach attempt|System access) from ((\w+)\.\w+)$/);
+	match = line.match(/ from (\w+\.\w+)$/);
 	if (match) {
-	    if (match[1].match(/breach/i)) {
-		entry.type = "breach";
+	    entry.from = nfo_script(match[1]);
+	}
+	match = line.match(/^(Connection|Breach attempt|System access) from /);
+	if (match) {
+	    if (match[1].match(/attempt/i)) {
+		entry.type = "attempt";
+		entry.level = 2;
 	    } else if (match[1].match(/access/i)) {
 		entry.type = "access";
+		entry.level = 3;
 	    } else {
-		entry.type = "connection";
+		entry.type = "connect";
+		entry.level = entry.from.valid ? 1 : 0;
 	    }
-	    entry.user = nfo_user(match[3]);
-	    entry.script = nfo_script(match[2]);
-	    delete entry.line;
+	}
+	match = line.match(/^(\w+\.\w+) execution from /);
+	if (match) {
+	    entry.type = "exec";
+	    entry.script = nfo_script(match[1]);
+	    entry.level = 4;
+	    if (match[1] === "sys.write_log") {
+		entry.args = result.pop().line;
+	    }
 	}
 	result.push(entry);
     });
@@ -39,11 +52,16 @@ function(context, args) {
 	return result;
     }
 
+    result = result.filter(function(entry) {
+	return entry.level > 0;
+    });
+
     var titles = [
         { name: "+date+", key: "date", func: fmt_date },
+        { name: "+from+", key: "from", func: fmt_script },
         { name: "+type+", key: "type" },
-        { name: "+user+", key: "user", func: fmt_user },
-        { name: "+script+", key: "script", func: fmt_script }
+        { name: "+script+", key: "script", func: fmt_script },
+        { name: "+args+", key: "args" }
     ];
 
     return {

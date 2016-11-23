@@ -1,4 +1,5 @@
 function (script) {
+    if (!script) return;
     var result = script.name;
 
     INCLUDE(security);
