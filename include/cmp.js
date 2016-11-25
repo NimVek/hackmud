@@ -13,7 +13,7 @@ function (a, b, comperator) {
     } else if (stdlib.is_str(comperator)) {
 //        var [_, sign, key] = comperator.match(/([+-]?)(.*)/);
         var match = comperator.match(/([+-]?)(.*)/);
-	key = match[2];
+	var key = match[2];
         var multiplicator = match[1] == "-" ? -1 : 1;
         return multiplicator * cmp(a[key], b[key]);
     } else if (stdlib.is_arr(comperator)) {
