@@ -2,50 +2,51 @@ module.exports = function(grunt) {
     "use strict";
 
     grunt.initConfig({
-	meta: {
-	    user: grunt.option("user") || "nimvek",
-	},
+        meta: {
+            user: grunt.option("user") || "nimvek",
+        },
         clean: {
-	    build: [ "build/" ],
-	    release: [ "release/" ],
-	},
+            build: ["build/"],
+            release: ["release/"],
+        },
         copy: {
             pre: {
                 expand: true,
                 flatten: true,
-                src: [ "tools/*.js", "hacking/*.js", "poc/*.js" ],
+                src: ["tools/*.js", "hacking/*.js", "poc/*.js"],
                 dest: "build/",
                 options: {
                     process: function(content) {
-			// Determine includes
-			var sources = [ content ];
-			var topology = [];
-			while (sources.length) {
-			    var source = sources.shift();
-			    var includes = source.match(/.*INCLUDE\(\w+\).*/g);
-			    while (includes && includes.length) {
-				var include = includes.pop().replace(/.*\((.*)\).*/, "$1");
-				sources.push(grunt.file.read("include/"+include+".js"));
-				topology.unshift(include);
-			    }
-			}
-			// Collect includes
-			var done = [];
-			var code = "";
-			while (topology.length) {
-			    var name = topology.shift();
-			    if (done.indexOf( name) < 0) {
-				code += "var "+name+" = " + grunt.file.read("include/"+name+".js")+";\n";
-				done.push(name);
-			    }
-			}
+                        // Determine includes
+                        var sources = [content];
+                        var topology = [];
+                        while (sources.length) {
+                            var source = sources.shift();
+                            var includes = source.match(/.*INCLUDE\(\w+\).*/g);
+                            while (includes && includes.length) {
+                                var include = includes.pop().replace(/.*\((.*)\).*/, "$1");
+                                sources.push(grunt.file.read("include/" + include + ".js"));
+                                topology.unshift(include);
+                            }
+                        }
+                        // Collect includes
+                        var done = [];
+                        var code = "";
+                        while (topology.length) {
+                            var name = topology.shift();
+                            if (done.indexOf(name) < 0) {
+                                code += "var " + name + " = " + grunt.file.read("include/" + name +
+                                    ".js") + ";\n";
+                                done.push(name);
+                            }
+                        }
 
-			// prepare code for linting and uglifing
-			content = content.replace(/.*INCLUDE\(\w+\).*/, code);
-			content = content.replace(/.*INCLUDE\(\w+\).*/g, "");
-			content = content.replace(/#s\./g, "SCRIPTOR.");
-			content = content.replace(/#db\./g, "DATABASE.");
-			content = content.replace(/([\s\S]*)/, "($1)();");
+                        // prepare code for linting and uglifing
+                        content = content.replace(/.*INCLUDE\(\w+\).*/, code);
+                        content = content.replace(/.*INCLUDE\(\w+\).*/g, "");
+                        content = content.replace(/#s\./g, "SCRIPTOR.");
+                        content = content.replace(/#db\./g, "DATABASE.");
+                        content = content.replace(/([\s\S]*)/, "($1)();");
                         return content;
                     }
                 }
@@ -53,29 +54,43 @@ module.exports = function(grunt) {
             post: {
                 expand: true,
                 flatten: true,
-                src: [ "build/*.js" ],
+                src: ["build/*.js"],
                 dest: "release/",
                 options: {
                     process: function(content) {
-                        return content.replace(/^\!([\s\S]*)\(\);$/, "$1").replace(/^\(([\s\S]*)\)\(\);$/, "$1").replace(/SCRIPTOR\./g, "#s.").replace(/DATABASE\./g, "#db.").replace(/LIBRARY/g, grunt.template.process("#s.<%= meta.user %>.lib()"));
+                        return content.replace(/^\!([\s\S]*)\(\);$/, "$1").replace(
+                            /^\(([\s\S]*)\)\(\);$/, "$1").replace(/SCRIPTOR\./g, "#s.").replace(
+                            /DATABASE\./g, "#db.").replace(/LIBRARY/g, grunt.template.process(
+                            "#s.<%= meta.user %>.lib()"));
                     }
                 }
             }
         },
         jshint: {
-            files: [ "Gruntfile.js", "build/*.js" ]
+            files: ["Gruntfile.js", "build/*.js"]
+        },
+        jsbeautifier: {
+            files: ["include/*.js", "tools/*.js", "hacking/*.js", "poc/*.js", "Gruntfile.js",
+                "package.json"
+            ],
+            options: {
+                js: {
+                    braceStyle: "collapse-preserve-inline",
+                    wrapLineLength: 120
+                }
+            }
         },
         uglify: {
-	    options: {
-		mangle: true,
-		compress: true,
-		beautify: true
-	    },
+            options: {
+                mangle: true,
+                compress: true,
+                beautify: true
+            },
             all: {
-                files: [ {
+                files: [{
                     expand: true,
                     src: "build/*.js",
-                } ]
+                }]
             }
         }
     });
@@ -84,7 +99,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-uglify");
+    grunt.loadNpmTasks("grunt-jsbeautifier");
 
-    grunt.registerTask("default", [ "static" ]);
-    grunt.registerTask("static", "build static scripts", [ "clean", "copy:pre", "jshint", "uglify", "copy:post", "clean:build" ]);
+    grunt.registerTask("default", ["static"]);
+    grunt.registerTask("static", "build static scripts", ["clean", "jsbeautifier", "copy:pre", "jshint", "uglify",
+        "copy:post",
+        "clean:build"
+    ]);
 };

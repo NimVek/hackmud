@@ -1,33 +1,33 @@
 // recover a corrupted response of a script
-function (scriptor, args) {
+function(scriptor, args) {
     INCLUDE(stdlib);
     INCLUDE(regex_corrupt);
 
     var result = stdlib.json.ostringify(scriptor.call(args)).split(regex_corrupt);
     while (result.length > 1) {
-	var info = stdlib.json.ostringify(scriptor.call(args)).split(regex_corrupt);
-	var iter_recover = -1;
-	var iter_info = 0;
-	var restored_last = -1;
-	var restored = [];
+        var info = stdlib.json.ostringify(scriptor.call(args)).split(regex_corrupt);
+        var iter_recover = -1;
+        var iter_info = 0;
+        var restored_last = -1;
+        var restored = [];
 
-	// assume same length of both outputs
-	for (var index in result) {
-	stdlib.log(restored);
-	    if (iter_recover < 0) {
-		restored.push(result[index]);
-		restored_last++;
-		iter_recover++;
-	    } else {
-		restored[restored_last] += info[iter_info][iter_recover++] + result[index];
-	    }
-	    iter_recover += result[index].length;
-	    while ( iter_recover > info[iter_info].length ) {
-		iter_recover -= info[iter_info++].length + 1;
-	    }
-	}
+        // assume same length of both outputs
+        for (var index in result) {
+            stdlib.log(restored);
+            if (iter_recover < 0) {
+                restored.push(result[index]);
+                restored_last++;
+                iter_recover++;
+            } else {
+                restored[restored_last] += info[iter_info][iter_recover++] + result[index];
+            }
+            iter_recover += result[index].length;
+            while (iter_recover > info[iter_info].length) {
+                iter_recover -= info[iter_info++].length + 1;
+            }
+        }
 
-	result = restored;
+        result = restored;
     }
 
     return stdlib.json.oparse(result[0]);

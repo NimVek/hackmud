@@ -1,2 +1,2 @@
 // known classes
-[ "architect", "infiltrator", "scavenger", "executive" ]
+["architect", "infiltrator", "scavenger", "executive"]

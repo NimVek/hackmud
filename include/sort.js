@@ -1,4 +1,4 @@
-function (array, order) {
+function(array, order) {
     // sort with given order
     INCLUDE(stdlib);
     INCLUDE(cmp);

@@ -35,14 +35,14 @@ function(context, args) { // count:5
     ];
 
     if (balance >= 0) {
-        titles.push(
-            { name: "+balance+", key: "balance", dir: -1, func: dtr.expandGC });
+        titles.push({ name: "+balance+", key: "balance", dir: -1, func: dtr.expandGC });
     }
 
-    var usage = '\n\nFor more transactions, add count:<"all" or number>\nFilter for sender, recipient or script, add from:"<user>", to:"<user>" or script:"<script>".\n';
+    var usage =
+        '\n\nFor more transactions, add count:<"all" or number>\nFilter for sender, recipient or script, add from:"<user>", to:"<user>" or script:"<script>".\n';
 
     return {
         ok: true,
-        msg: dtr.columns(list.reverse(), titles, {pre:"", suf:""}, true) + usage
+        msg: dtr.columns(list.reverse(), titles, { pre: "", suf: "" }, true) + usage
     };
 }

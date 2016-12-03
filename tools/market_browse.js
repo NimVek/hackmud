@@ -10,22 +10,23 @@ function(context, args) {
         args.cost = { "$lte": balance };
     }
 
-    var order = args.order || [ "tier", "type", "name", "rarity" ],
+    var order = args.order || ["tier", "type", "name", "rarity"],
         list = #s.market.browse(args),
         market = {};
 
     if (list.length === 0) {
         return {
             ok: false,
-            msg: "No suitable upgrades found.\nUsage: " + context.this_script + ' { name:"<upgrade name", type:"<lock, script_space, script>", tier:<1-4>, class:"<architect, executive, infitrator, scavenger>", cost:<num or GC str>, order:<array of properties> }'
+            msg: "No suitable upgrades found.\nUsage: " + context.this_script +
+                ' { name:"<upgrade name", type:"<lock, script_space, script>", tier:<1-4>, class:"<architect, executive, infitrator, scavenger>", cost:<num or GC str>, order:<array of properties> }'
         };
     }
 
     stdlib.each(list, function(_, item) {
         var id = "" + item.rarity + "-" + item.name;
         if (!(null === item.i || id in market)) {
-	    market[id] = item;
-	}
+            market[id] = item;
+        }
     });
 
     list = [];
@@ -45,17 +46,23 @@ function(context, args) {
         { name: "Cost", key: "cost", dir: -1, func: dtr.expandGC },
         { name: "Token", key: "i" },
         { name: "Type", key: "type" },
-        { name: "Class", key: "class", func: function(value) {
-                                                 return classes[value];
-                                             }},
-        { name: "Tier", key: "tier", dir: 0 } ];
+        {
+            name: "Class",
+            key: "class",
+            func: function(value) {
+                return classes[value];
+            }
+        },
+        { name: "Tier", key: "tier", dir: 0 }
+    ];
 
     titles.sort(function(a, b) {
-        return order.indexOf(a.key) != -1 ? order.indexOf(b.key) != -1 ? order.indexOf(a.key) - order.indexOf(b.key) : -1 : order.indexOf(b.key) != -1 ? 1 : 0;
+        return order.indexOf(a.key) != -1 ? order.indexOf(b.key) != -1 ? order.indexOf(a.key) - order.indexOf(b
+            .key) : -1 : order.indexOf(b.key) != -1 ? 1 : 0;
     });
 
     return {
         ok: true,
-        msg: dtr.columns(list, titles, { pre:"", suf:"" }, true)
+        msg: dtr.columns(list, titles, { pre: "", suf: "" }, true)
     };
 }

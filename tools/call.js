@@ -14,13 +14,13 @@ function(context, args) { // scriptor:#s.<scriptor>
     var result = scriptor.call(args.args);
 
     if (args.nfo) {
-	result = nfo_operand(result);
+        result = nfo_operand(result);
     }
 
     if (args.decolor) {
-	result = stdlib.json.ostringify(result);
-	result = result.replace(/([`+-\\!])(\w+)\1/g, "$1 $2$1");
-	result = stdlib.json.oparse(result);
+        result = stdlib.json.ostringify(result);
+        result = result.replace(/([`+-\\!])(\w+)\1/g, "$1 $2$1");
+        result = stdlib.json.oparse(result);
     }
 
     return {

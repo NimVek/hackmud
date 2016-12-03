@@ -1,4 +1,4 @@
-function (a, b, comperator) {
+function(a, b, comperator) {
     var i, result;
 
     INCLUDE(stdlib);
@@ -11,9 +11,9 @@ function (a, b, comperator) {
     } else if (stdlib.is_int(comperator)) {
         return sign(comperator) * cmp(a[abs(comperator)], b[abs(comperator)]);
     } else if (stdlib.is_str(comperator)) {
-//        var [_, sign, key] = comperator.match(/([+-]?)(.*)/);
+        // var [_, sign, key] = comperator.match(/([+-]?)(.*)/);
         var match = comperator.match(/([+-]?)(.*)/);
-	var key = match[2];
+        var key = match[2];
         var multiplicator = match[1] == "-" ? -1 : 1;
         return multiplicator * cmp(a[key], b[key]);
     } else if (stdlib.is_arr(comperator)) {

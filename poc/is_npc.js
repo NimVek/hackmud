@@ -13,7 +13,7 @@ function(context, args) { // name:""
 
     return {
         ok: true,
-        msg: args.name + " is " + ( result ? "NPC" : "human" )
+        msg: args.name + " is " + (result ? "NPC" : "human")
     };
 
 }
