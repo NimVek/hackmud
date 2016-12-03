@@ -6,9 +6,17 @@ function (operand) {
 	    result += " (" + operand + ")";
 	    break;
 	case 'object':
-	    result = {};
-	    for (var key in operand) {
-		result[key] = nfo_operand(operand[key]);
+	    var key;
+	    if (operand instanceof Array) {
+		result = [];
+		for (key in operand) {
+		    result.push( nfo_operand(operand[key]));
+		}
+	    } else {
+		result = {};
+		for (key in operand) {
+		    result[key] = nfo_operand(operand[key]);
+		}
 	    }
 	    break;
     }
