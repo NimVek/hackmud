@@ -19,7 +19,7 @@ function(context, args) { // scriptor:#s.<scriptor>
 
     if (args.decolor) {
         result = stdlib.json.ostringify(result);
-        result = result.replace(/([`+-\\!])(\w+)\1/g, "$1 $2$1");
+        result = result.replace(/([!`+-])(\w+)\1/g, "$1 $2$1");
         result = stdlib.json.oparse(result);
     }
 
