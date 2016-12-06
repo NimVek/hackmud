@@ -13,7 +13,6 @@ function(scriptor, args) {
 
         // assume same length of both outputs
         for (var index in result) {
-            stdlib.log(restored);
             if (iter_recover < 0) {
                 restored.push(result[index]);
                 restored_last++;
@@ -22,7 +21,7 @@ function(scriptor, args) {
                 restored[restored_last] += info[iter_info][iter_recover++] + result[index];
             }
             iter_recover += result[index].length;
-            while (iter_recover > info[iter_info].length) {
+            while (iter_info < info.length && iter_recover >= info[iter_info].length) {
                 iter_recover -= info[iter_info++].length + 1;
             }
         }
