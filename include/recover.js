@@ -6,6 +6,7 @@ function(scriptor, args) {
     var result = stdlib.json.ostringify(scriptor.call(args)).split(regex_corrupt);
     while (result.length > 1) {
         var info = stdlib.json.ostringify(scriptor.call(args)).split(regex_corrupt);
+        info.push("");
         var iter_recover = -1;
         var iter_info = 0;
         var restored_last = -1;
@@ -21,7 +22,7 @@ function(scriptor, args) {
                 restored[restored_last] += info[iter_info][iter_recover++] + result[index];
             }
             iter_recover += result[index].length;
-            while (iter_info < info.length && iter_recover >= info[iter_info].length) {
+            while (iter_recover >= info[iter_info].length) {
                 iter_recover -= info[iter_info++].length + 1;
             }
         }
