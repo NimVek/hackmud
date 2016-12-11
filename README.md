@@ -53,6 +53,22 @@ You can copy the file directly to your scripts folder.
 Depending on your operating system this is `%APPDATA%\hackmud\<username>\scripts\` (Windows) or `$HOME/.config/hackmud/<username>/scripts/` (Linux & Mac).
 The upload them with `#up <scriptname>`.
 
+### Static build
+
+```bash
+$ npm run-script build -- static
+```
+
+This includes all library functions, no lib is generated.
+
+### Dynamic build
+
+```bash
+$ npm run-script build -- dynamic --user=<username> [--lib=<include> --lib=<include> ...]
+```
+
+This generates a lib with the defined includes, wich is used by the other generated scripts.
+
 ## Todo
 
 * Automatically determine include per library (create library)
