@@ -2,8 +2,12 @@ function(string, color) {
     var pre = "`" + color;
     var post = "`";
 
-    if ("+-!".indexOf(color) > -1) {
-        pre = post = color;
+    if (color == '+') {
+	pre = "`V"
+    elif (color == '!') {
+	pre = "`N"
+    elif (color == '-') {
+	pre = "`C"
     }
 
     return string.replace(/(\w+)/g, pre + "$1" + post);

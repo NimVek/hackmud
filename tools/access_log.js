@@ -9,21 +9,16 @@ function(context, args) {
     INCLUDE(fmt_user);
     INCLUDE(fmt_date);
     INCLUDE(fmt_script);
+    INCLUDE(color);
 
     var result = [];
 
-    stdlib.each(log, function(_, line) {
-        var entry = { line: line };
-        var match = line.match(/^(\d{6}\.\d{4})\s+(.*)$/);
-        if (match) {
-            entry.date = parse_timestr(match[1]);
-            entry.line = line = match[2];
-        }
-        match = line.match(/ from (\w+\.\w+)$/);
+    stdlib.each(log, function(_, entry) {
+        var match = entry.msg.match(/ from (\w+\.\w+)$/);
         if (match) {
             entry.from = nfo_script(match[1]);
         }
-        match = line.match(/^(Connection|Breach attempt|System access) from /);
+        match = entry.msg.match(/^(Connection|Breach attempt|System access) from /);
         if (match) {
             if (match[1].match(/attempt/i)) {
                 entry.type = "attempt";
@@ -36,13 +31,13 @@ function(context, args) {
                 entry.level = entry.from.valid ? 1 : 0;
             }
         }
-        match = line.match(/^(\w+\.\w+) execution from /);
+        match = entry.msg.match(/^(\w+\.\w+) execution from /);
         if (match) {
             entry.type = "exec";
             entry.script = nfo_script(match[1]);
             entry.level = 4;
             if (match[1] === "sys.write_log") {
-                entry.args = result.pop().line;
+                entry.args = result.pop().msg;
             }
         }
         result.push(entry);
@@ -57,11 +52,11 @@ function(context, args) {
     });
 
     var titles = [
-        { name: "+date+", key: "date", func: fmt_date },
-        { name: "+from+", key: "from", func: fmt_script },
-        { name: "+type+", key: "type" },
-        { name: "+script+", key: "script", func: fmt_script },
-        { name: "+args+", key: "args" }
+        { name: color("date", 'V'), key: "t", func: fmt_date },
+        { name: color("from", 'V'), key: "from", func: fmt_script },
+        { name: color("type", 'V'), key: "type" },
+        { name: color("script", 'V'), key: "script", func: fmt_script },
+        { name: color("args", 'V'), key: "args" }
     ];
 
     return {

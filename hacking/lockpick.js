@@ -18,7 +18,7 @@ function(context, args) { // lock:#s.<user>.<script>
         index;
 
     do {
-        tmp = result.match(/!(\w+)!.*$/);
+        tmp = result.match(/`N(\w+)`.*$/);
         if (tmp) {
             type = tmp[1];
             index = 0;
